@@ -10,33 +10,91 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JournalRouteImport } from './routes/journal'
+import { Route as PistesRouteImport } from './routes/pistes'
+import { Route as ReglagesRouteImport } from './routes/reglages'
+import { Route as ResumeRouteImport } from './routes/resume'
+import { Route as TendancesRouteImport } from './routes/tendances'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JournalRoute = JournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PistesRoute = PistesRouteImport.update({
+  id: '/pistes',
+  path: '/pistes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReglagesRoute = ReglagesRouteImport.update({
+  id: '/reglages',
+  path: '/reglages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResumeRoute = ResumeRouteImport.update({
+  id: '/resume',
+  path: '/resume',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TendancesRoute = TendancesRouteImport.update({
+  id: '/tendances',
+  path: '/tendances',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/journal': typeof JournalRoute
+  '/pistes': typeof PistesRoute
+  '/reglages': typeof ReglagesRoute
+  '/resume': typeof ResumeRoute
+  '/tendances': typeof TendancesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/journal': typeof JournalRoute
+  '/pistes': typeof PistesRoute
+  '/reglages': typeof ReglagesRoute
+  '/resume': typeof ResumeRoute
+  '/tendances': typeof TendancesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/journal': typeof JournalRoute
+  '/pistes': typeof PistesRoute
+  '/reglages': typeof ReglagesRoute
+  '/resume': typeof ResumeRoute
+  '/tendances': typeof TendancesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/journal' | '/pistes' | '/reglages' | '/resume' | '/tendances'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/journal' | '/pistes' | '/reglages' | '/resume' | '/tendances'
+  id:
+    | '__root__'
+    | '/'
+    | '/journal'
+    | '/pistes'
+    | '/reglages'
+    | '/resume'
+    | '/tendances'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JournalRoute: typeof JournalRoute
+  PistesRoute: typeof PistesRoute
+  ReglagesRoute: typeof ReglagesRoute
+  ResumeRoute: typeof ResumeRoute
+  TendancesRoute: typeof TendancesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +106,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/journal': {
+      id: '/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof JournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pistes': {
+      id: '/pistes'
+      path: '/pistes'
+      fullPath: '/pistes'
+      preLoaderRoute: typeof PistesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reglages': {
+      id: '/reglages'
+      path: '/reglages'
+      fullPath: '/reglages'
+      preLoaderRoute: typeof ReglagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resume': {
+      id: '/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof ResumeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tendances': {
+      id: '/tendances'
+      path: '/tendances'
+      fullPath: '/tendances'
+      preLoaderRoute: typeof TendancesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JournalRoute: JournalRoute,
+  PistesRoute: PistesRoute,
+  ReglagesRoute: ReglagesRoute,
+  ResumeRoute: ResumeRoute,
+  TendancesRoute: TendancesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
