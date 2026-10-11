@@ -7,7 +7,7 @@ import { importSession, syncPendingSleep } from "@/lib/sleep-sync";
 const input = "h-10 w-full rounded-md border border-input bg-card px-3 text-sm";
 
 function nextAt(hm: string) {
-  const [h, m] = hm.split(":").map(Number);
+  const [h = 7, m = 0] = hm.split(":").map(Number);
   const d = new Date();
   d.setHours(h, m, 0, 0);
   if (d.getTime() <= Date.now()) d.setDate(d.getDate() + 1);
