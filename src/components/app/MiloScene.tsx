@@ -76,13 +76,13 @@ export function MiloScene({ claims, accessory, children }: {
       {children}
       {action === "breathe" && <div key={session.id} className="milo-breath-ring" aria-hidden="true" />}
       <div className="milo-position">
-        <Button key={session.id} variant="ghost" className={cn("milo-character", `milo-${action}`)}
+        <Button key={session.id} variant="ghost" className="milo-character"
           aria-label={action === "sleep" ? "Réveiller Milo" : "Caresser Milo"}
           onClick={() => begin(action === "sleep" ? "idle" : "cuddle")}>
-          <img src={action === "sleep" || action === "breathe" ? sleeping : idle}
+          <span className={cn("milo-pose", `milo-${action}`)}><img src={action === "sleep" || action === "breathe" ? sleeping : idle}
             alt={action === "sleep" ? "Milo dort paisiblement" : action === "breathe" ? "Milo respire les yeux fermés" : "Milo, petit oiseau turquoise à l’écharpe corail"}
             className="h-full w-full object-contain" draggable={false} />
-          {accessory && <span className="milo-accessory" aria-label={accessory.name}>{accessory.emoji}</span>}
+          {accessory && <span className="milo-accessory" aria-label={accessory.name}>{accessory.emoji}</span>}</span>
         </Button>
       </div>
       {(action === "cuddle" || action === "celebrate" || action === "dance") &&
