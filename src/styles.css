@@ -199,7 +199,7 @@
   .milo-particles span { animation: milo-float 2s ease-out infinite; }
   .milo-berry { animation: milo-snack 3s ease-in-out infinite; }
   .milo-zzz { animation: milo-float 3s ease-out infinite; }
-  .milo-butterfly { animation: milo-flutter 1.4s ease-in-out infinite; }
+  .milo-fluttering { display: block; animation: milo-flutter 1.4s ease-in-out infinite; }
   @keyframes milo-idle { 0%, 100% { transform: rotate(-1deg); } 50% { transform: translateY(-3px) rotate(1deg); } }
   @keyframes milo-cuddle { 0%, 100% { transform: rotate(-7deg) scale(0.98); } 50% { transform: rotate(7deg) scale(1.03); } }
   @keyframes milo-nibble { 0%, 100% { transform: rotate(0); } 50% { transform: translateY(3px) rotate(3deg); } }

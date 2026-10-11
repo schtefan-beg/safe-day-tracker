@@ -92,7 +92,7 @@ export function MiloScene({ claims, accessory, children }: {
       {action === "play" && <Button variant="ghost" className={cn("milo-butterfly", `milo-target-${caught}`)} aria-label={`Attraper le papillon ${caught + 1}`} onClick={() => {
         if (caught === 2) begin("celebrate");
         else setCaught((n) => n + 1);
-      }}>🦋</Button>}
+      }}><span aria-hidden="true" className="milo-fluttering">🦋</span></Button>}
       {action !== "idle" && <Button variant="secondary" size="icon" className="absolute bottom-20 right-4 z-20 rounded-full bg-card/95" aria-label={action === "sleep" ? "Réveiller Milo" : "Terminer ce moment"} onClick={() => begin("idle")}>
         {action === "sleep" ? <Sun /> : <X />}
       </Button>}
