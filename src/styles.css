@@ -169,7 +169,45 @@
 .game-progress::-webkit-progress-value { background: var(--primary); border-radius: 99px; transition: width 0.4s ease; }
 .game-progress::-moz-progress-bar { background: var(--primary); }
 @media (max-width: 480px) { .companion-scene { height: 300px; } }
+.milo-position { position: absolute; left: 50%; bottom: 70px; width: 205px; height: 232px; transform: translateX(-50%); }
+.milo-character { position: relative; width: 100%; height: 100%; padding: 0; background: transparent; transform-origin: 50% 95%; }
+.milo-character:hover, .milo-character:active { background: transparent; }
+.milo-pose { display: block; position: relative; width: 100%; height: 100%; transform-origin: 50% 95%; pointer-events: none; }
+.milo-accessory { position: absolute; top: 0; left: 42%; font-size: 32px; }
+.milo-particles { position: absolute; top: 25%; left: 50%; width: 200px; height: 160px; transform: translateX(-50%); pointer-events: none; color: var(--game-pink); }
+.milo-particles span { position: absolute; font-size: 27px; }
+.milo-particles span:nth-child(1) { left: 0; top: 60%; }
+.milo-particles span:nth-child(2) { right: 0; top: 40%; animation-delay: 0.4s; }
+.milo-particles span:nth-child(3) { left: 45%; top: 0; animation-delay: 0.8s; }
+.milo-berry { position: absolute; top: 50%; left: 57%; font-size: 32px; pointer-events: none; }
+.milo-zzz { position: absolute; top: 26%; left: 63%; color: var(--scene-ink); font-size: 25px; font-weight: 800; pointer-events: none; }
+.milo-butterfly { position: absolute; z-index: 10; width: 60px; height: 60px; padding: 0; font-size: 38px; border-radius: 50%; background: var(--card); box-shadow: var(--shadow-game); }
+.milo-target-0 { left: 12%; top: 42%; }
+.milo-target-1 { right: 12%; top: 24%; }
+.milo-target-2 { left: 18%; top: 21%; }
+.milo-breath-ring { position: absolute; left: calc(50% - 112px); bottom: 72px; width: 224px; height: 224px; border-radius: 50%; border: 3px solid var(--primary); background: var(--card); opacity: 0.35; }
+@media (max-width: 480px) { .milo-position { width: 170px; height: 194px; bottom: 66px; } .milo-breath-ring { width: 184px; height: 184px; left: calc(50% - 92px); bottom: 68px; } }
 @media (prefers-reduced-motion: no-preference) {
-  .companion-scene img { animation: meadow-breathe 6s ease-in-out infinite; }
-  @keyframes meadow-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+  .milo-idle { animation: milo-idle 4s ease-in-out infinite; }
+  .milo-cuddle { animation: milo-cuddle 1.2s ease-in-out infinite; }
+  .milo-feed { animation: milo-nibble 0.65s ease-in-out infinite; }
+  .milo-dance { animation: milo-dance 0.85s ease-in-out infinite; }
+  .milo-play, .milo-celebrate { animation: milo-jump 0.85s ease-in-out infinite; }
+  .milo-sleep { animation: milo-idle 5s ease-in-out infinite; }
+  .milo-breathe { animation: milo-breathe 8s ease-in-out infinite; }
+  .milo-breath-ring { animation: milo-ring 8s ease-in-out infinite; }
+  .milo-particles span { animation: milo-float 2s ease-out infinite; }
+  .milo-berry { animation: milo-snack 3s ease-in-out infinite; }
+  .milo-zzz { animation: milo-float 3s ease-out infinite; }
+  .milo-fluttering { display: block; animation: milo-flutter 1.4s ease-in-out infinite; }
+  @keyframes milo-idle { 0%, 100% { transform: rotate(-1deg); } 50% { transform: translateY(-3px) rotate(1deg); } }
+  @keyframes milo-cuddle { 0%, 100% { transform: rotate(-7deg) scale(0.98); } 50% { transform: rotate(7deg) scale(1.03); } }
+  @keyframes milo-nibble { 0%, 100% { transform: rotate(0); } 50% { transform: translateY(3px) rotate(3deg); } }
+  @keyframes milo-dance { 0%, 100% { transform: translateX(-12px) rotate(-10deg); } 50% { transform: translateX(12px) translateY(-10px) rotate(10deg); } }
+  @keyframes milo-jump { 0%, 100% { transform: scale(1.03, 0.97); } 45% { transform: translateY(-22px) scale(0.98, 1.03); } }
+  @keyframes milo-breathe { 0%, 100% { transform: scale(0.97); } 50% { transform: scale(1.06); } }
+  @keyframes milo-ring { 0%, 100% { transform: scale(0.8); opacity: 0.2; } 50% { transform: scale(1.12); opacity: 0.45; } }
+  @keyframes milo-float { 0% { transform: translateY(12px) scale(0.8); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(-35px) scale(1.15); opacity: 0; } }
+  @keyframes milo-snack { 0%, 100% { transform: translate(24px, 15px) scale(1); opacity: 1; } 70% { transform: translate(-20px, -14px) scale(0.5); opacity: 0; } }
+  @keyframes milo-flutter { 0%, 100% { transform: translateY(-4px) rotate(-8deg); } 50% { transform: translateY(4px) rotate(8deg); } }
 }
