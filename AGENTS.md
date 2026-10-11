@@ -16,3 +16,4 @@
 - Offline uses vite-plugin-pwa generateSW written to dist/client, registered only from `src/lib/pwa-register.ts` (refuses dev/preview/iframe). Why: avoid stale caches in preview.
 - Companion rewards use the existing IndexedDB settings table with transactional day-and-event-type claims; never derive rewards from symptom severity. Why: prevent duplicate rewards and encourage participation without judging health.
 - Typography and companion artwork are bundled locally. Why: the redesigned experience must not depend on remote font or image requests.
+- Milo's scene layers bundled character poses over a separate meadow; transient interactions and timers stay in MiloScene and never alter quest rewards. Why: animate only the animal, keep play private and prevent reward farming.
