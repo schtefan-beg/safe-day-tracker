@@ -18,16 +18,18 @@ describe("Milo interactions", () => {
   it("lets Milo sleep until explicitly woken", () => {
     vi.useFakeTimers();
     render(<MiloScene claims={0} />);
-    fireEvent.click(screen.getByRole("button", { name: "Repos", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Repos" }));
     act(() => vi.advanceTimersByTime(60000));
     expect(screen.getByAltText("Milo dort paisiblement")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "Réveiller Milo" })[0]);
+    const wake = screen.getAllByRole("button", { name: "Réveiller Milo" })[0];
+    if (!wake) throw new Error("Missing wake control");
+    fireEvent.click(wake);
     expect(screen.getByRole("status")).toHaveTextContent("Un petit moment ensemble");
   });
 
   it("offers a three-butterfly game followed by celebration", () => {
     render(<MiloScene claims={0} />);
-    fireEvent.click(screen.getByRole("button", { name: "Jouer", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Jouer" }));
     for (let i = 1; i <= 3; i++) fireEvent.click(screen.getByRole("button", { name: `Attraper le papillon ${i}` }));
     expect(screen.getByRole("status")).toHaveTextContent("Bravo pour ton petit pas");
   });
@@ -35,7 +37,7 @@ describe("Milo interactions", () => {
   it("runs three timed breathing cycles and can interrupt them", () => {
     vi.useFakeTimers();
     render(<MiloScene claims={0} />);
-    fireEvent.click(screen.getByRole("button", { name: "Respirer", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Respirer" }));
     expect(screen.getByRole("status")).toHaveTextContent("Inspire doucement · 4");
     act(() => vi.advanceTimersByTime(4000));
     expect(screen.getByRole("status")).toHaveTextContent("Expire doucement · 4");
@@ -53,9 +55,9 @@ describe("Milo interactions", () => {
   it("replaces the previous timer when choosing another moment", () => {
     vi.useFakeTimers();
     render(<MiloScene claims={0} />);
-    fireEvent.click(screen.getByRole("button", { name: "Câlin", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Câlin" }));
     act(() => vi.advanceTimersByTime(3000));
-    fireEvent.click(screen.getByRole("button", { name: "Danser", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Danser" }));
     act(() => vi.advanceTimersByTime(2000));
     expect(screen.getByRole("status")).toHaveTextContent("La danse des petits bonheurs");
     fireEvent.click(screen.getByRole("button", { name: "Terminer ce moment" }));

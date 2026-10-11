@@ -29,7 +29,7 @@ const MESSAGES: Record<Action, string> = {
 
 export function MiloScene({ claims, accessory, children }: {
   claims: number;
-  accessory?: { name: string; emoji: string };
+  accessory?: { name: string; emoji: string } | undefined;
   children?: React.ReactNode;
 }) {
   const [session, setSession] = useState<{ action: Action; id: number }>({ action: "idle", id: 0 });
