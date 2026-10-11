@@ -8,7 +8,7 @@ class SleepTrackerWeb extends WebPlugin {
     return {
       native: false, accelerometer: false, microphone: false, canScheduleExactAlarms: false,
       ignoringBatteryOptimizations: false, notificationsGranted: false, micPermission: "prompt",
-      androidSdk: null, manufacturer: null,
+      androidSdk: null, manufacturer: null, soundModel: false,
     };
   }
   async getCapabilities() { return this.caps(); }
@@ -20,6 +20,8 @@ class SleepTrackerWeb extends WebPlugin {
   async getStatus() { return { running: false, id: null, startedAt: null, epochs: 0 }; }
   async getPendingSessions() { return { sessions: [] }; }
   async acknowledgeSession() {}
+  async getClip(): Promise<{ base64: string }> { throw this.unavailable("Indisponible"); }
+  async deleteClips() {}
 }
 
 export const SleepTracker = registerPlugin<SleepTrackerPlugin>("SleepTracker", {

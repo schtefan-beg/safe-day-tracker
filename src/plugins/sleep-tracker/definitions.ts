@@ -11,6 +11,8 @@ export interface SleepCapabilities {
   micPermission: "granted" | "denied" | "prompt";
   androidSdk: number | null;
   manufacturer: string | null;
+  /** Snore/cough model bundled in the APK. */
+  soundModel: boolean;
 }
 
 export interface StartOptions {
@@ -20,12 +22,17 @@ export interface StartOptions {
   alarmLatest?: number;
   /** Number of consecutive light-sleep epochs required to fire early (default 4 = 2 min). */
   lightEpochs?: number;
+  /** Phase 2: on-device snore/cough detection (requires microphone). */
+  detectSounds?: boolean;
+  /** Keep ~6 s local clips around detections. Opt-in only, never uploaded. */
+  saveClips?: boolean;
 }
 
 export type Stage = "wake" | "light" | "deep" | "rem";
 
 export interface SleepEventMark {
   t: number;
+  score?: number;
   kind: "awakening" | "noise" | "snore" | "cough" | "phone_moved";
 }
 
@@ -46,6 +53,10 @@ export interface SleepSession {
   qualityReasons: string[];
   smartAlarmFiredAt: number | null;
   avgNoiseDb: number | null;
+  soundDetection: string | null;
+  snoreMinutes: number;
+  coughCount: number;
+  clips: { name: string; t: number; kind: "snore" | "cough" }[];
 }
 
 export interface SleepTrackerPlugin {
@@ -57,6 +68,8 @@ export interface SleepTrackerPlugin {
   stop(): Promise<{ id: string | null }>;
   getStatus(): Promise<{ running: boolean; id: string | null; startedAt: number | null; epochs: number }>;
   getPendingSessions(): Promise<{ sessions: SleepSession[] }>;
+  getClip(opts: { sessionId: string; name: string }): Promise<{ base64: string }>;
+  deleteClips(opts: { sessionId?: string }): Promise<void>;
   acknowledgeSession(opts: { id: string }): Promise<void>;
   addListener(event: "sessionFinished", fn: (s: SleepSession) => void): Promise<PluginListenerHandle>;
 }

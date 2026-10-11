@@ -5,3 +5,4 @@
 - [x] Add independent Milo animations and playful, affectionate, restful interactions.
 - [x] Verify new interactions, reduced motion and phone layout.
 - [x] Sleep tracker: TS contract, web fallback, settings card, Kotlin plugin (service, Room, Cole-Kripke, smart alarm). Device test matrix pending (needs physical phones).
+- [x] Sleep tracker phase 2: on-device snore/cough detection (YAMNet) with opt-in local clips. Model file + device tests pending.

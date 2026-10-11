@@ -48,6 +48,7 @@ class SleepTrackingService : Service(), SensorEventListener {
     @Volatile private var micRun = false
     private val secRms = mutableListOf<Double>()
     private var micThread: Thread? = null
+    private var detector: SoundEventDetector? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -115,6 +116,9 @@ class SleepTrackingService : Service(), SensorEventListener {
         micRun = true
         micThread = Thread {
             val rate = 16000
+            val s = session
+            val det = if (s != null && s.detectSounds) SoundEventDetector(this, s.id, s.saveClips).takeIf { it.ready } else null
+            detector = det
             val buf = max(AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT), rate / 5)
             val rec = AudioRecord(MediaRecorder.AudioSource.MIC, rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buf)
             val pcm = ShortArray(rate) // 1 s; overwritten every second, never persisted
@@ -128,8 +132,14 @@ class SleepTrackingService : Service(), SensorEventListener {
                     val rms = sqrt(sum / max(1, read)) / 32768.0
                     val db = 20 * log10(max(rms, 1e-6))
                     synchronized(secRms) { secRms.add(db) }
+                    if (det != null && s != null) {
+                        val now = System.currentTimeMillis()
+                        det.onSecond(pcm, read, db, now)?.let { d ->
+                            io.execute { dao.insertSound(SoundEventEntity(s.id, d.t, d.kind, d.score.toDouble(), d.clip)) }
+                        }
+                    }
                 }
-            } catch (_: Exception) { } finally { try { rec.stop() } catch (_: Exception) {}; rec.release() }
+            } catch (_: Exception) { } finally { det?.close(); try { rec.stop() } catch (_: Exception) {}; rec.release() }
         }.apply { start() }
     }
 
@@ -200,7 +210,7 @@ object Finalizer {
         if (s.status != "running") return
         val epochs = dao.epochs(id)
         val end = epochs.lastOrNull()?.let { it.t + SleepTrackingService.EPOCH_MS }?.coerceAtMost(endedAt) ?: endedAt
-        val json = SleepAlgorithm.summarize(s, epochs, end)
+        val json = SleepAlgorithm.summarize(s, epochs, end, dao.sounds(id))
         dao.upsertSession(s.copy(endedAt = end, status = "finalized", summaryJson = json.toString()))
         AlarmScheduler.cancel(ctx, id)
         SleepTrackerPlugin.emitFinished(json)

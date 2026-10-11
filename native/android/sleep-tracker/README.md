@@ -51,8 +51,13 @@ dependencies {
 ## Algorithm (`ck92-phone-norm-1`)
 Cole-Kripke 1992 on 1-min epochs (pairs of 30 s phone epochs), counts normalised to the session 90th percentile, simplified Webster rescoring. Light/deep from percentiles within 90-min windows; REM is a low-confidence heuristic. Calibrate against a reference device before trusting stages.
 
-## Phase 2 (not implemented)
-Snore/cough detection with a small TFLite audio classifier (e.g. YAMNet-derived) running on 1 s frames in the service; clips saved locally only with an explicit opt-in.
+## Phase 2 — snore / cough detection
+- `SoundEventDetector.kt` runs YAMNet (TFLite Task Audio) on each 1 s mic frame (skipped below -55 dBFS to save battery). Labels "Snoring"/"Snort" → snore, "Cough"/"Throat clearing" → cough, score > 0.35, debounced (snore 30 s, cough 3 s). Stored in Room table `sound_event` (DB v2 migration).
+- Model: download `yamnet.tflite` (with metadata) from https://www.kaggle.com/models/google/yamnet/tfLite/classification-tflite and place it at `android/app/src/main/assets/yamnet.tflite` (~4 MB). Without it, `soundModel=false` and the option is disabled.
+- Gradle: `implementation "org.tensorflow:tensorflow-lite-task-audio:0.4.4"` and `android { aaptOptions { noCompress "tflite" } }`.
+- Clips (opt-in `saveClips`): 6 s WAV (3 s before/after), max 20 per night, in app-private `filesDir/sleep-clips/<session>/`, excluded from backups — add `android:allowBackup="false"` or a `dataExtractionRules` excluding `sleep-clips`. `getClip` returns base64 for local playback; `deleteClips` wipes them.
+- Summary adds `snoreMinutes`, `coughCount`, `clips`, `soundDetection` (model version).
+- Extra tests: partner snoring next to the phone (false positives), fan/white noise, battery drain with detection on over 8 h.
 
 ## Recovery
 State lives in Room. `START_STICKY` restarts the service and resumes the running session. After reboot, `BootReceiver` re-arms the fallback alarm and finalizes the partial session (Android 14 forbids restarting a mic FGS from boot); the gap marks it `partial`.

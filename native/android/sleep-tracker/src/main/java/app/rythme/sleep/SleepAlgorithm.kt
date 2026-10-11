@@ -58,7 +58,7 @@ object SleepAlgorithm {
         return out
     }
 
-    fun summarize(s: SessionEntity, epochs: List<EpochEntity>, endedAt: Long): JSONObject {
+    fun summarize(s: SessionEntity, epochs: List<EpochEntity>, endedAt: Long, sounds: List<SoundEventEntity> = emptyList()): JSONObject {
         val minutes = (epochs.size + 1) / 2
         val counts = DoubleArray(minutes) { m ->
             epochs.getOrNull(2 * m)?.activity.orZero() + epochs.getOrNull(2 * m + 1)?.activity.orZero()
@@ -100,6 +100,13 @@ object SleepAlgorithm {
         for (i in asleep.indices) if (i in (onset + 1)..last && !asleep[i] && i - lastWake > 5) {
             events.put(JSONObject().put("t", s.startedAt + i * 60_000L).put("kind", "awakening")); lastWake = i
         }
+        val clips = JSONArray()
+        sounds.forEach { e ->
+            events.put(JSONObject().put("t", e.t).put("kind", e.kind).put("score", e.score))
+            e.clip?.let { clips.put(JSONObject().put("name", it).put("t", e.t).put("kind", e.kind)) }
+        }
+        // snore minutes ≈ 30 s marks (debounced) → minutes
+        val snoreMin = sounds.count { it.kind == "snore" } * 0.5
         if (gaps > epochs.size / 20) reasons.put("gaps")
         if (moved > 3) reasons.put("phone_moved")
         if (s.lowBattery) reasons.put("low_battery")
@@ -117,6 +124,10 @@ object SleepAlgorithm {
             .put("hypnogram", hyp).put("events", events)
             .put("quality", quality).put("qualityReasons", reasons)
             .put("smartAlarmFiredAt", s.smartAlarmFiredAt ?: JSONObject.NULL)
+            .put("soundDetection", if (s.detectSounds) SoundEventDetector.MODEL_VERSION else JSONObject.NULL)
+            .put("snoreMinutes", snoreMin)
+            .put("coughCount", sounds.count { it.kind == "cough" })
+            .put("clips", clips)
             .put("avgNoiseDb", if (noiseN > 0) noiseSum / noiseN else JSONObject.NULL)
     }
 
