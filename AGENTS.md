@@ -17,3 +17,4 @@
 - Companion rewards use the existing IndexedDB settings table with transactional day-and-event-type claims; never derive rewards from symptom severity. Why: prevent duplicate rewards and encourage participation without judging health.
 - Typography and companion artwork are bundled locally. Why: the redesigned experience must not depend on remote font or image requests.
 - Milo's scene layers bundled character poses over a separate meadow; transient interactions and timers stay in MiloScene and never alter quest rewards. Why: animate only the animal, keep play private and prevent reward farming.
+- Native sleep tracking lives in a Kotlin Capacitor plugin (native/android/sleep-tracker) behind the TS contract in src/plugins/sleep-tracker; finished nights are imported as local sleep events and then acknowledged. Why: the night runs without JS and data never leaves the phone.
