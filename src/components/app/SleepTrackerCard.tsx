@@ -19,6 +19,8 @@ export function SleepTrackerCard() {
   const [caps, setCaps] = useState<SleepCapabilities | null>(null);
   const [running, setRunning] = useState(false);
   const [mic, setMic] = useState(false);
+  const [sounds, setSounds] = useState(false);
+  const [clips, setClips] = useState(false);
   const [alarm, setAlarm] = useState(true);
   const [latest, setLatest] = useState("07:30");
   const [win, setWin] = useState(30);
@@ -50,7 +52,7 @@ export function SleepTrackerCard() {
     if (mic && c.micPermission !== "granted") return void toast.error("Micro refusé — suivi par mouvements seulement possible");
     const l = nextAt(latest);
     try {
-      await SleepTracker.start({ useMicrophone: mic, ...(alarm ? { alarmLatest: l, alarmEarliest: l - win * 60000 } : {}) });
+      await SleepTracker.start({ useMicrophone: mic, detectSounds: mic && sounds, saveClips: mic && sounds && clips, ...(alarm ? { alarmLatest: l, alarmEarliest: l - win * 60000 } : {}) });
       setRunning(true);
       toast.success("Bonne nuit ! Pose le téléphone sur le matelas.");
     } catch (e) { toast.error((e as Error).message); }
@@ -66,6 +68,16 @@ export function SleepTrackerCard() {
           <label className="flex items-center justify-between">Utiliser le micro (niveau sonore seulement)
             <input type="checkbox" className="h-5 w-5" checked={mic} onChange={(e) => setMic(e.target.checked)} />
           </label>
+          {mic && (
+            <label className="flex items-center justify-between">Détecter ronflements et toux
+              <input type="checkbox" className="h-5 w-5" disabled={caps ? !caps.soundModel : false} checked={sounds} onChange={(e) => setSounds(e.target.checked)} />
+            </label>
+          )}
+          {mic && sounds && (
+            <label className="flex items-center justify-between">Garder de courts extraits audio (sur le téléphone)
+              <input type="checkbox" className="h-5 w-5" checked={clips} onChange={(e) => setClips(e.target.checked)} />
+            </label>
+          )}
           <label className="flex items-center justify-between">Réveil intelligent
             <input type="checkbox" className="h-5 w-5" checked={alarm} onChange={(e) => setAlarm(e.target.checked)} />
           </label>
@@ -84,7 +96,9 @@ export function SleepTrackerCard() {
       {caps && !caps.ignoringBatteryOptimizations && (
         <button onClick={() => SleepTracker.openBatterySettings()} className="w-full rounded-xl border border-border py-2">Désactiver l'optimisation de batterie pour Rythme</button>
       )}
-      <p className="text-xs text-muted-foreground">Aucun son n'est enregistré : seul un niveau sonore par seconde est calculé, et tout reste sur le téléphone. Les phases (léger/profond/paradoxal) sont des estimations.</p>
+      <button onClick={async () => { if (confirm("Supprimer tous les extraits audio ?")) { await SleepTracker.deleteClips({}); toast.success("Extraits supprimés"); } }} className="w-full rounded-xl border border-border py-2">Supprimer tous les extraits audio</button>
+      <p className="text-xs text-muted-foreground">Ronflements et toux sont reconnus sur le téléphone, sans jamais rien envoyer. Les extraits ne sont gardés que si tu l'actives.</p>
+      <p className="text-xs text-muted-foreground">Sans extraits, aucun son n'est enregistré : seul un niveau sonore par seconde est calculé, et tout reste sur le téléphone. Les phases (léger/profond/paradoxal) sont des estimations.</p>
     </div>
   );
 }

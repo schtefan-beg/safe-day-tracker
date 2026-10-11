@@ -17,7 +17,10 @@ export async function importSession(s: SleepSession) {
         awakenings: s.awakenings,
         tracker: s,
       },
-      note: `Suivi automatique (${s.algoVersion}) · fiabilité ${s.quality}`,
+      note: [
+        `Suivi automatique (${s.algoVersion}) · fiabilité ${s.quality}`,
+        s.soundDetection ? `ronflements ~${Math.round(s.snoreMinutes ?? 0)} min · toux ${s.coughCount ?? 0}` : "",
+      ].filter(Boolean).join(" · "),
       tagIds: [],
     });
     await setSetting("sleepImported", [...done, s.id].slice(-200));
