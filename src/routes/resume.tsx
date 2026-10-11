@@ -16,6 +16,8 @@ export const Route = createFileRoute("/resume")({
       { title: "Résumé pour séance — Rythme" },
       { name: "description", content: "Résumé de 4 semaines à partager avec un·e psychologue, généré sur ton téléphone." },
       { property: "og:title", content: "Résumé pour séance — Rythme" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Un résumé clair et factuel pour ta prochaine séance." },
     ],
   }),

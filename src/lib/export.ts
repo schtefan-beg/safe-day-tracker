@@ -146,7 +146,9 @@ export function summaryPDF(s: Summary, opts: { includeText: boolean; selectedIds
   };
   const n = s.series.length;
   (Object.keys(colors) as (keyof typeof colors)[]).forEach((key, i) => {
-    doc.setDrawColor(...colors[key]); doc.setLineWidth(0.5);
+    const color = colors[key];
+    if (!color) return;
+    doc.setDrawColor(...color); doc.setLineWidth(0.5);
     let prev: [number, number] | null = null;
     s.series.forEach((pt, j) => {
       const v = (pt as any)[key] as number | null;
@@ -156,7 +158,7 @@ export function summaryPDF(s: Summary, opts: { includeText: boolean; selectedIds
       doc.circle(x, yy, 0.6, "F");
       prev = [x, yy];
     });
-    doc.setFontSize(8); doc.setTextColor(...colors[key]);
+    doc.setFontSize(8); doc.setTextColor(...color);
     doc.text(clean(key), cx + i * 30, cy + ch + 5);
   });
   doc.setTextColor(0); doc.setLineWidth(0.2);

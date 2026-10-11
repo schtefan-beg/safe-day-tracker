@@ -91,13 +91,13 @@ export function EventEditor({
 
   const save = async () => {
     const timestamp = new Date(ts).getTime();
-    if (isNaN(timestamp)) return toast.error("Date invalide");
-    if (type === "sleep" && (!p.duration_min || p.quality == null)) return toast.error("Durée et qualité du sommeil requises");
-    if (type === "medication" && !p.name?.trim()) return toast.error("Nom requis");
-    if (type === "symptom_physical" && !p.symptom?.trim()) return toast.error("Symptôme requis");
+    if (isNaN(timestamp)) return void toast.error("Date invalide");
+    if (type === "sleep" && (!p.duration_min || p.quality == null)) return void toast.error("Durée et qualité du sommeil requises");
+    if (type === "medication" && !p.name?.trim()) return void toast.error("Nom requis");
+    if (type === "symptom_physical" && !p.symptom?.trim()) return void toast.error("Symptôme requis");
     if (type === "psy" && [p.mood, p.stress, p.anxiety, p.energy].every((v) => v == null) && !note.trim())
-      return toast.error("Renseigne au moins un score ou un détail");
-    await saveEvent({ id: event?.id, type, timestamp, payload: p, note, tagIds });
+      return void toast.error("Renseigne au moins un score ou un détail");
+    await saveEvent({ ...(event ? { id: event.id } : {}), type, timestamp, payload: p, note, tagIds });
     toast.success(event ? "Modifié" : "Enregistré");
     onOpenChange(false);
   };

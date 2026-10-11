@@ -46,8 +46,8 @@ export async function checkReminders() {
   }
   if (r.backupDays) {
     const last = await getSetting<number>("lastExport", 0);
-    if (Date.now() - last > r.backupDays * 86400000 && fired.backup !== today) {
-      fired.backup = today;
+    if (Date.now() - last > r.backupDays * 86400000 && fired["backup"] !== today) {
+      fired["backup"] = today;
       await notify("Sauvegarde", "Pense à exporter une sauvegarde de tes données.");
     }
   }

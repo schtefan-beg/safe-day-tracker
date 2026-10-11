@@ -14,6 +14,8 @@ export const Route = createFileRoute("/journal")({
       { title: "Journal — Rythme" },
       { name: "description", content: "Chronologie de tous tes événements, filtrable par type, tag et période." },
       { property: "og:title", content: "Journal — Rythme" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Chronologie filtrable de ton quotidien." },
     ],
   }),

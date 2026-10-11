@@ -14,6 +14,8 @@ export const Route = createFileRoute("/tendances")({
       { title: "Tendances — Rythme" },
       { name: "description", content: "Humeur, stress, sommeil et digestion sur 14, 28 ou 56 jours." },
       { property: "og:title", content: "Tendances — Rythme" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Tes courbes psy, sommeil et digestion réunies." },
     ],
   }),
@@ -94,7 +96,7 @@ function Trends() {
           ))}
         </div>
         <ResponsiveContainer width="100%" height={200}>
-          <ComposedChart data={data} onClick={openDay}>
+          <ComposedChart data={data ?? []} onClick={openDay}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
             <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
             <YAxis domain={[0, 10]} {...axis} width={20} />
@@ -108,7 +110,7 @@ function Trends() {
 
       <Card title="Sommeil : durée (h) et qualité">
         <ResponsiveContainer width="100%" height={170}>
-          <ComposedChart data={data} onClick={openDay}>
+          <ComposedChart data={data ?? []} onClick={openDay}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
             <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
             <YAxis domain={[0, 12]} {...axis} width={20} />
@@ -127,7 +129,7 @@ function Trends() {
           </select>
         </div>
         <ResponsiveContainer width="100%" height={190}>
-          <ComposedChart data={data} onClick={openDay}>
+          <ComposedChart data={data ?? []} onClick={openDay}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
             <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
             <YAxis domain={[0, 10]} {...axis} width={20} />

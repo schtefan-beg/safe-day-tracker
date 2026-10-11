@@ -260,7 +260,7 @@ export function eventTitle(e: FullEvent): string {
     }
   }
 }
-export const cap = (s: string) => (s ? s[0].toUpperCase() + s.slice(1) : s);
+export const cap = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 export function fmtDur(min?: number | null) {
   if (min == null || isNaN(min)) return "–";
   const h = Math.floor(min / 60), m = Math.round(min % 60);
