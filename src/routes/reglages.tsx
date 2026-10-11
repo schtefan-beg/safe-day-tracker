@@ -9,6 +9,7 @@ import { applyBackup, exportCSV, exportJSON, parseBackup, type Backup } from "@/
 import { checkPin, setPin, validPin } from "@/lib/pin";
 import { DEFAULT_REMINDERS, requestPermission, type ReminderSettings } from "@/lib/notifications";
 import { useApp } from "@/components/app/AppShell";
+import { SleepTrackerCard } from "@/components/app/SleepTrackerCard";
 
 export const Route = createFileRoute("/reglages")({
   head: () => ({
@@ -34,6 +35,7 @@ function Settings() {
         <h1 className="text-3xl">Réglages</h1>
         <button onClick={lock} className="flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs"><Lock className="h-3.5 w-3.5" /> Verrouiller</button>
       </div>
+      <Card title="Suivi de nuit"><SleepTrackerCard /></Card>
       <Backups />
       <Tags />
       <Reminders />
