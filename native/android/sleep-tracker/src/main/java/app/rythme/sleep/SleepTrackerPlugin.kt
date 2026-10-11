@@ -55,6 +55,7 @@ class SleepTrackerPlugin : Plugin() {
             put("micPermission", if (mic) "granted" else if (getPermissionState("microphone") == PermissionState.DENIED) "denied" else "prompt")
             put("androidSdk", Build.VERSION.SDK_INT)
             put("manufacturer", Build.MANUFACTURER)
+            put("soundModel", SoundEventDetector.available(ctx))
         }
     }
 
@@ -89,7 +90,9 @@ class SleepTrackerPlugin : Plugin() {
         io.execute {
             dao.running()?.let { Finalizer.finalize(context, it.id) }
             val s = SessionEntity(UUID.randomUUID().toString(), System.currentTimeMillis(), useMic = useMic,
-                alarmEarliest = earliest, alarmLatest = latest, lightEpochs = call.getInt("lightEpochs", 4) ?: 4)
+                alarmEarliest = earliest, alarmLatest = latest, lightEpochs = call.getInt("lightEpochs", 4) ?: 4,
+                detectSounds = useMic && call.getBoolean("detectSounds", false) == true && SoundEventDetector.available(context),
+                saveClips = useMic && call.getBoolean("saveClips", false) == true)
             dao.upsertSession(s)
             if (latest != null) AlarmScheduler.scheduleFallback(context, s.id, latest)
             activity.runOnUiThread {
@@ -122,6 +125,26 @@ class SleepTrackerPlugin : Plugin() {
             val arr = JSONArray()
             dao.pending().forEach { s -> s.summaryJson?.let { arr.put(JSONObject(it)) } }
             call.resolve(JSObject().put("sessions", arr))
+        }
+    }
+
+    /** Returns a locally saved clip as base64 WAV for in-app playback. Never leaves the device. */
+    @PluginMethod fun getClip(call: PluginCall) {
+        val id = call.getString("sessionId") ?: return call.reject("sessionId requis")
+        val name = call.getString("name")?.takeIf { it.matches(Regex("^[0-9]+_(snore|cough)\\.wav$")) } ?: return call.reject("nom invalide")
+        io.execute {
+            val f = java.io.File(SoundEventDetector.clipsDir(context, id), name)
+            if (!f.exists()) return@execute call.reject("introuvable")
+            call.resolve(JSObject().put("base64", android.util.Base64.encodeToString(f.readBytes(), android.util.Base64.NO_WRAP)))
+        }
+    }
+
+    @PluginMethod fun deleteClips(call: PluginCall) {
+        val id = call.getString("sessionId")
+        io.execute {
+            val root = java.io.File(context.filesDir, "sleep-clips")
+            if (id == null) root.deleteRecursively() else SoundEventDetector.clipsDir(context, id).deleteRecursively()
+            call.resolve()
         }
     }
 
