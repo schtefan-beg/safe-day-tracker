@@ -141,7 +141,7 @@ function Reminders() {
   const enable = async (on: boolean) => {
     if (on) {
       const p = await requestPermission();
-      if (p !== "granted") return toast.error("Notifications refusées ou non disponibles");
+      if (p !== "granted") return void toast.error("Notifications refusées ou non disponibles");
     }
     update({ enabled: on });
   };
@@ -192,9 +192,9 @@ function PinChange() {
   const [n1, setN1] = useState("");
   const [n2, setN2] = useState("");
   const submit = async () => {
-    if (!(await checkPin(oldP))) return toast.error("Ancien code incorrect");
-    if (!validPin(n1)) return toast.error("Le nouveau code doit faire 4 à 6 chiffres");
-    if (n1 !== n2) return toast.error("Les codes ne correspondent pas");
+    if (!(await checkPin(oldP))) return void toast.error("Ancien code incorrect");
+    if (!validPin(n1)) return void toast.error("Le nouveau code doit faire 4 à 6 chiffres");
+    if (n1 !== n2) return void toast.error("Les codes ne correspondent pas");
     await setPin(n1);
     setOld(""); setN1(""); setN2("");
     toast.success("Code modifié");

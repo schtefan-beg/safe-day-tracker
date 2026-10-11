@@ -38,7 +38,7 @@ function Today() {
     const rows = await db().events.where("[type+timestamp]").between(["psy", 0], ["psy", Infinity]).reverse().limit(20).toArray();
     const ev = await hydrate(rows);
     const pick = (k: string) => ev.find((e) => typeof e.payload[k] === "number");
-    return [["mood", "Humeur"], ["stress", "Stress"], ["anxiety", "Anxiété"], ["energy", "Énergie"]].map(([k, l]) => {
+    return ([["mood", "Humeur"], ["stress", "Stress"], ["anxiety", "Anxiété"], ["energy", "Énergie"]] as const).map(([k, l]) => {
       const e = pick(k);
       return { label: l, value: e?.payload[k] as number | undefined, at: e?.timestamp };
     });
