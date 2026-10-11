@@ -11,6 +11,8 @@ export const Route = createFileRoute("/pistes")({
       { title: "Pistes — Rythme" },
       { name: "description", content: "Associations exploratoires entre ton quotidien, ta digestion et ton état psychologique." },
       { property: "og:title", content: "Pistes — Rythme" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Des associations à explorer, sans conclusion médicale." },
     ],
   }),

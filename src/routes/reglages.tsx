@@ -16,6 +16,8 @@ export const Route = createFileRoute("/reglages")({
       { title: "Réglages — Rythme" },
       { name: "description", content: "Tags, rappels, code PIN, sauvegarde et export de tes données locales." },
       { property: "og:title", content: "Réglages — Rythme" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Gère tes tags, rappels et sauvegardes." },
     ],
   }),

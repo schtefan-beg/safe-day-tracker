@@ -1,6 +1,10 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/nunito/400.css";
+@import "@fontsource/nunito/600.css";
+@import "@fontsource/nunito/700.css";
+@import "@fontsource/nunito/800.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -59,33 +63,36 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-game-pink: var(--game-pink);
+  --color-game-gold: var(--game-gold);
+  --color-scene-ink: var(--scene-ink);
 }
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.975 0.012 85);
-  --foreground: oklch(0.27 0.03 160);
-  --card: oklch(0.995 0.006 85);
+  --background: oklch(0.984 0.009 180);
+  --foreground: oklch(0.32 0.045 185);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.27 0.03 160);
   --popover: oklch(0.995 0.006 85);
   --popover-foreground: oklch(0.27 0.03 160);
-  --primary: oklch(0.45 0.07 160);
+  --primary: oklch(0.49 0.105 178);
   --primary-foreground: oklch(0.98 0.01 85);
-  --secondary: oklch(0.93 0.025 85);
-  --secondary-foreground: oklch(0.3 0.04 160);
-  --muted: oklch(0.94 0.018 85);
-  --muted-foreground: oklch(0.5 0.025 150);
-  --accent: oklch(0.9 0.04 140);
+  --secondary: oklch(0.96 0.073 88);
+  --secondary-foreground: oklch(0.43 0.095 73);
+  --muted: oklch(0.955 0.017 178);
+  --muted-foreground: oklch(0.5 0.035 185);
+  --accent: oklch(0.93 0.045 170);
   --accent-foreground: oklch(0.3 0.05 160);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.89 0.02 85);
-  --input: oklch(0.89 0.02 85);
+  --border: oklch(0.91 0.025 180);
+  --input: oklch(0.89 0.025 180);
   --ring: oklch(0.55 0.07 160);
-  --chart-1: oklch(0.55 0.1 155);
-  --chart-2: oklch(0.62 0.15 40);
-  --chart-3: oklch(0.55 0.12 310);
-  --chart-4: oklch(0.58 0.11 240);
+  --chart-1: oklch(0.5 0.11 172);
+  --chart-2: oklch(0.57 0.17 24);
+  --chart-3: oklch(0.56 0.15 345);
+  --chart-4: oklch(0.53 0.13 260);
   --chart-5: oklch(0.75 0.13 85);
   --sidebar: oklch(0.984 0.003 247.858);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
@@ -95,9 +102,16 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --game-pink: oklch(0.62 0.19 10);
+  --game-gold: oklch(0.65 0.15 80);
+  --scene-ink: oklch(0.32 0.045 185);
+  --shadow-game: 0 3px 0 oklch(0.88 0.025 180 / 0.5);
 }
 
 .dark {
+  --game-pink: oklch(0.77 0.14 10);
+  --game-gold: oklch(0.8 0.15 85);
+  --scene-ink: oklch(0.32 0.045 185);
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
@@ -144,6 +158,18 @@
 }
 
 @layer base {
-  body { font-family: 'Figtree', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-  h1, h2, h3, .font-display { font-family: 'Fraunces', Georgia, serif; }
+  body { font-family: 'Nunito', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; letter-spacing: 0; }
+  h1, h2, h3, .font-display { font-family: 'Nunito', system-ui, sans-serif; font-weight: 800; letter-spacing: 0; }
+}
+
+.companion-scene { height: 350px; border-radius: 20px; }
+.quest-row { box-shadow: var(--shadow-game); }
+.game-progress { appearance: none; overflow: hidden; border-radius: 99px; }
+.game-progress::-webkit-progress-bar { background: var(--muted); }
+.game-progress::-webkit-progress-value { background: var(--primary); border-radius: 99px; transition: width 0.4s ease; }
+.game-progress::-moz-progress-bar { background: var(--primary); }
+@media (max-width: 480px) { .companion-scene { height: 300px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .companion-scene img { animation: meadow-breathe 6s ease-in-out infinite; }
+  @keyframes meadow-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 }

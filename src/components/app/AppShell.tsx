@@ -7,6 +7,8 @@ import { registerAppSW } from "@/lib/pwa-register";
 import { checkReminders } from "@/lib/notifications";
 import { EventEditor } from "./EventEditor";
 import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
+import meadow from "@/assets/milo-meadow.jpg";
 
 interface Ctx {
   openNew: (t: EventType) => void;
@@ -80,9 +82,9 @@ function BottomNav() {
       <div className="mx-auto grid max-w-xl grid-cols-5">
         {items.map(({ to, label, icon: Icon }) => (
           <Link key={to} to={to} activeOptions={{ exact: to === "/" }}
-            className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] text-muted-foreground"
-            activeProps={{ className: "text-primary font-semibold" }}>
-            <Icon className="h-5 w-5" />
+             className="flex flex-col items-center gap-1 py-3 text-[10px] font-bold text-muted-foreground"
+             activeProps={{ className: "text-primary font-extrabold bg-accent/60" }}>
+             <Icon className="h-5 w-5" strokeWidth={2.2} />
             {label}
           </Link>
         ))}
@@ -102,11 +104,11 @@ export function PinPad({ value, onChange, onSubmit, max = 6 }: { value: string; 
       </div>
       <div className="grid grid-cols-3 gap-3">
         {keys.map((k) => (
-          <button key={k} type="button"
+           <Button key={k} type="button" variant={k === "OK" ? "default" : "secondary"}
             onClick={() => (k === "⌫" ? onChange(value.slice(0, -1)) : k === "OK" ? onSubmit() : value.length < max && onChange(value + k))}
             className={`h-16 rounded-2xl text-xl font-medium ${k === "OK" ? "bg-primary text-primary-foreground" : "bg-card shadow-sm active:bg-accent"}`}>
             {k}
-          </button>
+           </Button>
         ))}
       </div>
     </div>
@@ -123,7 +125,8 @@ function LockScreen({ onUnlock }: { onUnlock: () => void }) {
   useEffect(() => { if (pin.length === 6) submit(); }, [pin]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-6">
-      <h1 className="mb-2 text-3xl">Rythme</h1>
+      <img src={meadow} width={1536} height={1024} alt="Milo t’attend dans son jardin" className="mb-6 h-40 w-60 rounded-2xl object-cover" />
+      <h1 className="mb-2 text-3xl">Rythme 🌼</h1>
       <p className="mb-8 text-sm text-muted-foreground">{err || "Entre ton code"}</p>
       <PinPad value={pin} onChange={(v) => { setErr(""); setPinV(v); }} onSubmit={submit} />
     </div>
@@ -138,14 +141,15 @@ function Onboarding({ onDone }: { onDone: () => void }) {
   if (step === "intro")
     return (
       <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 bg-background px-6">
-        <h1 className="text-4xl leading-tight">Rythme</h1>
-        <p className="text-lg">Ton journal privé pour suivre repas, sommeil, activité, digestion et état psychologique.</p>
+        <img src={meadow} width={1536} height={1024} alt="Milo, ton nouveau petit compagnon" className="w-full rounded-2xl" />
+        <h1 className="text-4xl leading-tight">Rythme 🌼</h1>
+        <p className="text-lg font-bold">De petits pas pour toi. Une grande aventure avec Milo.</p>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li>• Tes données restent uniquement sur ce téléphone. Aucun compte, aucun serveur.</li>
           <li>• L'app montre des observations, jamais un diagnostic.</li>
           <li>• Sans sauvegarde exportée, une perte ou réinitialisation du téléphone efface tout.</li>
         </ul>
-        <button onClick={() => setStep("pin")} className="h-12 rounded-xl bg-primary font-medium text-primary-foreground">Créer mon code</button>
+        <Button onClick={() => setStep("pin")} className="h-12 rounded-xl font-extrabold">Créer mon code</Button>
       </div>
     );
   return (

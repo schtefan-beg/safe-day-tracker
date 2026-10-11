@@ -14,3 +14,5 @@
 - Event attributes are stored as `payload_json` and parsed after index filtering; charts read `daily_aggregates`, recomputed on every save/delete. Why: flexible schema with cheap chart reads.
 - The app UI renders inside `<ClientOnly>` in `__root.tsx` behind a PIN gate (`AppShell`). Why: IndexedDB and the lock are browser-only.
 - Offline uses vite-plugin-pwa generateSW written to dist/client, registered only from `src/lib/pwa-register.ts` (refuses dev/preview/iframe). Why: avoid stale caches in preview.
+- Companion rewards use the existing IndexedDB settings table with transactional day-and-event-type claims; never derive rewards from symptom severity. Why: prevent duplicate rewards and encourage participation without judging health.
+- Typography and companion artwork are bundled locally. Why: the redesigned experience must not depend on remote font or image requests.

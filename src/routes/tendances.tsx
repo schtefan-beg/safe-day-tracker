@@ -14,6 +14,8 @@ export const Route = createFileRoute("/tendances")({
       { title: "Tendances — Rythme" },
       { name: "description", content: "Humeur, stress, sommeil et digestion sur 14, 28 ou 56 jours." },
       { property: "og:title", content: "Tendances — Rythme" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Tes courbes psy, sommeil et digestion réunies." },
     ],
   }),
