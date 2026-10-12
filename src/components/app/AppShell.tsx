@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { BarChart3, BookOpen, Home, Lightbulb, Settings } from "lucide-react";
 import { db, DEFAULT_TAGS, ensureTag, type EventType, type FullEvent } from "@/lib/db";
 import { checkPin, hasPin, setPin, validPin } from "@/lib/pin";
-import { registerAppSW } from "@/lib/pwa-register";
 import { checkReminders } from "@/lib/notifications";
 import { EventEditor } from "./EventEditor";
 import { Toaster } from "@/components/ui/sonner";
@@ -27,7 +26,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     hasPin().then((h) => setState(h ? "locked" : "onboarding")).catch(() => setState("onboarding"));
-    registerAppSW();
   }, []);
 
   useEffect(() => {
