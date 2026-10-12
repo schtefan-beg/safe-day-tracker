@@ -18,3 +18,4 @@
 - Typography and companion artwork are bundled locally. Why: the redesigned experience must not depend on remote font or image requests.
 - Milo's scene layers bundled character poses over a separate meadow; transient interactions and timers stay in MiloScene and never alter quest rewards. Why: animate only the animal, keep play private and prevent reward farming.
 - Native sleep tracking lives in a Kotlin Capacitor plugin (native/android/sleep-tracker) behind the TS contract in src/plugins/sleep-tracker; finished nights are imported as local sleep events and then acknowledged. Why: the night runs without JS and data never leaves the phone.
+- Screen time: manual `screen` events plus a Kotlin ScreenTime plugin (UsageStatsManager) imported as deterministic per-day/category events. Why: re-imports replace instead of duplicating, data stays on-device.

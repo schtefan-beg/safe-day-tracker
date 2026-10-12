@@ -1,9 +1,9 @@
 import Dexie, { type Table } from "dexie";
 import { format } from "date-fns";
 
-export type EventType = "meal" | "sleep" | "activity" | "medication" | "symptom_physical" | "psy";
+export type EventType = "meal" | "sleep" | "activity" | "medication" | "symptom_physical" | "psy" | "screen";
 
-export const EVENT_TYPES: EventType[] = ["meal", "sleep", "activity", "medication", "symptom_physical", "psy"];
+export const EVENT_TYPES: EventType[] = ["meal", "sleep", "activity", "medication", "symptom_physical", "psy", "screen"];
 
 export const TYPE_LABEL: Record<EventType, string> = {
   meal: "Repas",
@@ -12,6 +12,7 @@ export const TYPE_LABEL: Record<EventType, string> = {
   medication: "Médicament",
   symptom_physical: "Symptôme",
   psy: "Check-in psy",
+  screen: "Écran",
 };
 
 export interface EventRow {
@@ -45,6 +46,7 @@ export interface DailyAggregate {
   digestion_max_intensity: number | null;
   activity_duration_min: number;
   activity_intensity_avg: number | null;
+  screen_min?: number;
 }
 export interface SettingRow {
   key: string;
@@ -60,6 +62,7 @@ export interface SleepPayload {
 export interface ActivityPayload { kind: string; duration_min: number; intensity: number }
 export interface MedicationPayload { name: string; dose?: string; category: string; recurring: boolean }
 export interface SymptomPayload { symptom: string; intensity: number; zone?: string }
+export interface ScreenPayload { category: string; duration_min: number; source?: "manual" | "auto"; apps?: { label: string; min: number }[] }
 export interface PsyPayload { mood?: number | null; stress?: number | null; anxiety?: number | null; energy?: number | null }
 
 export interface FullEvent extends EventRow {
@@ -218,6 +221,7 @@ export async function recomputeDay(day: string) {
   const psy = ev.filter((e) => e.type === "psy");
   const sym = ev.filter((e) => e.type === "symptom_physical");
   const act = ev.filter((e) => e.type === "activity");
+  const scr = ev.filter((e) => e.type === "screen");
   const agg: DailyAggregate = {
     date: day,
     sleep_duration_min: sleeps.length ? sleeps.reduce((a, e) => a + (e.p.duration_min || 0), 0) : null,
@@ -230,6 +234,7 @@ export async function recomputeDay(day: string) {
     digestion_max_intensity: sym.length ? Math.max(...sym.map((e) => e.p.intensity ?? 0)) : null,
     activity_duration_min: act.reduce((a, e) => a + (e.p.duration_min || 0), 0),
     activity_intensity_avg: avg(act.map((e) => e.p.intensity)),
+    screen_min: scr.reduce((a, e) => a + (e.p.duration_min || 0), 0),
   };
   if (!rows.length) await db().daily_aggregates.delete(day);
   else await db().daily_aggregates.put(agg);
@@ -258,6 +263,7 @@ export function eventTitle(e: FullEvent): string {
       ].filter(Boolean);
       return parts.length ? parts.join(" · ") : "Check-in (détail)";
     }
+    case "screen": return `Écran · ${cap(p.category || "autre")} ${fmtDur(p.duration_min)}${p.source === "auto" ? " · auto" : ""}`;
   }
 }
 export const cap = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);

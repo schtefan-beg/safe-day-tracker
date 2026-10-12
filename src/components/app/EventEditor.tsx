@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 
 const MEAL_KINDS = ["petit-déjeuner", "déjeuner", "dîner", "collation", "autre"];
 const ACT_KINDS = ["marche", "course", "sport", "mobilité", "randonnée", "musculation", "autre"];
+export const SCREEN_CATS = ["travail", "jeux vidéo", "vidéos", "réseaux sociaux", "messagerie", "lecture", "autre"];
 const MED_CATS = ["médicament", "traitement", "complément", "autre"];
 const BASE_SYMPTOMS = ["ballonnements", "reflux", "douleurs abdominales", "nausée", "transit", "fatigue", "maux de tête"];
 
@@ -83,6 +84,7 @@ export function EventEditor({
       medication: { name: "", dose: "", category: "médicament", recurring: false },
       symptom_physical: { symptom: "ballonnements", intensity: 5, zone: "" },
       psy: { mood: null, stress: null, anxiety: null, energy: null },
+      screen: { category: "travail", duration_min: 60, source: "manual" },
     };
     setP(event?.payload ?? defaults[type]);
   }, [open, event, type]);
@@ -93,6 +95,7 @@ export function EventEditor({
     const timestamp = new Date(ts).getTime();
     if (isNaN(timestamp)) return void toast.error("Date invalide");
     if (type === "sleep" && (!p.duration_min || p.quality == null)) return void toast.error("Durée et qualité du sommeil requises");
+    if (type === "screen" && !p.duration_min) return void toast.error("Durée requise");
     if (type === "medication" && !p.name?.trim()) return void toast.error("Nom requis");
     if (type === "symptom_physical" && !p.symptom?.trim()) return void toast.error("Symptôme requis");
     if (type === "psy" && [p.mood, p.stress, p.anxiety, p.energy].every((v) => v == null) && !note.trim())
@@ -134,6 +137,12 @@ export function EventEditor({
             <Field label="Type"><Chips options={ACT_KINDS} value={p.kind} onChange={(v) => set("kind", v)} /></Field>
             <Field label="Durée"><DurationInput value={p.duration_min} onChange={(v) => set("duration_min", v ?? 0)} /></Field>
             <ScoreSlider label="Intensité" value={p.intensity} onChange={(v) => set("intensity", v ?? 0)} hint="1–3 faible · 4–6 modérée · 7–10 intense" />
+          </>)}
+
+          {type === "screen" && (<>
+            <Field label="Usage"><Chips options={SCREEN_CATS} value={p.category} onChange={(v) => set("category", v)} /></Field>
+            <Field label="Durée"><DurationInput value={p.duration_min} onChange={(v) => set("duration_min", v ?? 0)} /></Field>
+            {p.source === "auto" && <p className="text-xs text-muted-foreground">Importé automatiquement depuis le téléphone.</p>}
           </>)}
 
           {type === "medication" && (<>

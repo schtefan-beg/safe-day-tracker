@@ -13,7 +13,7 @@ dependencies {
   implementation "androidx.core:core-ktx:1.13.1"
 }
 ```
-3. Register in `MainActivity`: `registerPlugin(SleepTrackerPlugin::class.java)` before `super.onCreate`.
+3. Register in `MainActivity`: `registerPlugin(SleepTrackerPlugin::class.java)` and `registerPlugin(ScreenTimePlugin::class.java)` before `super.onCreate`.
 4. Merge into `AndroidManifest.xml`:
 ```xml
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -69,3 +69,9 @@ State lives in Room. `START_STICKY` restarts the service and resumes the running
 | Samsung One UI | same + "Put unused apps to sleep" / deep-sleeping apps list |
 | Xiaomi MIUI/HyperOS | same + Autostart permission, battery "No restrictions" |
 Check for each: epochs without gaps, fallback alarm rings even if the service was killed, smart alarm only inside the window, session appears in the journal after reopening the app.
+
+## Temps d'écran (ScreenTimePlugin)
+Add to the manifest: `<uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />`
+(with `xmlns:tools` on `<manifest>`). The user grants it in Settings → Accès aux données d'utilisation; the app opens that screen.
+Usage is read with UsageStatsManager on-device and grouped by the app's Play category (jeux, vidéos, réseaux, travail…).
+Test: Pixel, Samsung, Xiaomi (MIUI may need "Autres autorisations"), split-screen, screen-off with video playing.

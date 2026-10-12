@@ -10,6 +10,7 @@ import { checkPin, setPin, validPin } from "@/lib/pin";
 import { DEFAULT_REMINDERS, requestPermission, type ReminderSettings } from "@/lib/notifications";
 import { useApp } from "@/components/app/AppShell";
 import { SleepTrackerCard } from "@/components/app/SleepTrackerCard";
+import { ScreenTimeCard } from "@/components/app/ScreenTimeCard";
 
 export const Route = createFileRoute("/reglages")({
   head: () => ({
@@ -36,6 +37,7 @@ function Settings() {
         <button onClick={lock} className="flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs"><Lock className="h-3.5 w-3.5" /> Verrouiller</button>
       </div>
       <Card title="Suivi de nuit"><SleepTrackerCard /></Card>
+      <Card title="Temps d'écran"><ScreenTimeCard /></Card>
       <Backups />
       <Tags />
       <Reminders />
