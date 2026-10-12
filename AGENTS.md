@@ -1,21 +1,11 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
-
 ## Architecture decisions
+- Static SPA (Vite + TanStack Router, hash history), embedded in an Android APK via Capacitor. No SSR, no server, no service worker. Why: no backend exists and the app ships as a local APK.
 - All user data lives in IndexedDB via Dexie (`src/lib/db.ts`); no backend. Why: the spec requires local-only, private data.
 - Event attributes are stored as `payload_json` and parsed after index filtering; charts read `daily_aggregates`, recomputed on every save/delete. Why: flexible schema with cheap chart reads.
-- The app UI renders inside `<ClientOnly>` in `__root.tsx` behind a PIN gate (`AppShell`). Why: IndexedDB and the lock are browser-only.
-- Offline uses vite-plugin-pwa generateSW written to dist/client, registered only from `src/lib/pwa-register.ts` (refuses dev/preview/iframe). Why: avoid stale caches in preview.
+- The app UI renders behind a PIN gate (`AppShell`). Why: protect health data on a shared or unlocked phone.
+- Reminders use `@capacitor/local-notifications` on Android; the monthly export reminder is scheduled natively (1st of the month, 10:00, silent channel) so it works with the app closed. Why: no push server, data stays local.
 - Companion rewards use the existing IndexedDB settings table with transactional day-and-event-type claims; never derive rewards from symptom severity. Why: prevent duplicate rewards and encourage participation without judging health.
-- Typography and companion artwork are bundled locally. Why: the redesigned experience must not depend on remote font or image requests.
+- Typography and companion artwork are bundled locally. Why: the app must not depend on remote font or image requests.
 - Milo's scene layers bundled character poses over a separate meadow; transient interactions and timers stay in MiloScene and never alter quest rewards. Why: animate only the animal, keep play private and prevent reward farming.
-- Native sleep tracking lives in a Kotlin Capacitor plugin (native/android/sleep-tracker) behind the TS contract in src/plugins/sleep-tracker; finished nights are imported as local sleep events and then acknowledged. Why: the night runs without JS and data never leaves the phone.
+- Native sleep tracking lives in a Kotlin Capacitor plugin (native/android/sleep-tracker) behind the TS contract in src/plugins/sleep-tracker; finished nights are imported as local sleep events and then acknowledged. Sleep and audio features are opt-in and user-disableable. Why: the night runs without JS and data never leaves the phone.
 - Screen time: manual `screen` events plus a Kotlin ScreenTime plugin (UsageStatsManager) imported as deterministic per-day/category events. Why: re-imports replace instead of duplicating, data stays on-device.
